@@ -69,7 +69,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // ProductsService.seedInitialProducts();
     super.initState();
   }
 
@@ -91,16 +90,19 @@ class _HomeScreenState extends State<HomeScreen> {
             return const Center(child: Text('No products found'));
           } else {
             final products = snapshot.data!;
-            return ListView(
-              children: [
-                ...products.map((product) => Card(
-                  child: ListTile(
-                    title: Text(product.name),
-                    subtitle: Text("${product.quantity} items in stock"),
-                    trailing: Text('Ksh ${product.price}'),
-                  ),
-                ))
-              ],
+            return RefreshIndicator(
+              onRefresh: () async=> setState(() {  }),
+              child: ListView(
+                children: [
+                  ...products.map((product) => Card(
+                    child: ListTile(
+                      title: Text(product.name),
+                      subtitle: Text("${product.quantity} items in stock"),
+                      trailing: Text('Ksh ${product.price}'),
+                    ),
+                  ))
+                ],
+              ),
             );
           }
         },
