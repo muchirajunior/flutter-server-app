@@ -10,6 +10,63 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Product> produts = [];
+
+  addProduct(){
+    bool isLoading = false;
+    Product product = Product.fromJson({});
+    showDialog(
+      context: context, 
+      builder: (context)=>StatefulBuilder(
+        builder: (context,setState){
+          return AlertDialog(
+            title: Text('Add item'),
+            content: SizedBox(
+              width: 400,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    decoration: const InputDecoration(labelText: 'Product Name'),
+                    onChanged: (value) => product.name = value,
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    decoration: const InputDecoration(labelText: 'Price (Ksh)'),
+                    keyboardType: TextInputType.number,
+                    onChanged: (value) => product.price = double.tryParse(value) ?? 0.0,
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    decoration: const InputDecoration(labelText: 'Quantity in Stock'),
+                    keyboardType: TextInputType.number,
+                    onChanged: (value) => product.quantity = int.tryParse(value) ?? 0,
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: isLoading ? null : () async {
+                        setState(() => isLoading = true);
+                        await ProductsService.addProduct(product);
+                        if (mounted) {
+                          Navigator.pop(context);
+                          setState(() {}); // Refresh the product list
+                        }
+                      },
+                      child: isLoading 
+                          ? const CircularProgressIndicator()
+                          : const Text('Add Product'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+      )
+    ).then((_)=>setState(() { }));
+  }
+
   @override
   void initState() {
     // ProductsService.seedInitialProducts();
@@ -47,7 +104,8 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           }
         },
-      )
+      ),
+      floatingActionButton: FloatingActionButton(onPressed: addProduct, child: Icon(Icons.add),),
     );
   }
 }

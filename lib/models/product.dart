@@ -1,8 +1,8 @@
 class Product {
-  final int id;
-  final String name;
-  final num price;
-  final int quantity;
+  int id;
+  String name;
+  num price;
+  int quantity;
 
   Product({
     required this.id,
